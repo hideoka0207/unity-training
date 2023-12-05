@@ -5,44 +5,25 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour
 {
     // 攻撃判定用オブジェクト.
-    [SerializeField] 
-    private GameObject attackHit = null;
-
-    // 設置判定用ColliderCall.
-    [SerializeField] 
-    ColliderCallReceiver footColliderCall = null;
-
-    // ジャンプ力.
-    [SerializeField] 
-    private float jumpPower = 20f;
-
+    [SerializeField] GameObject attackHit = null;
     // アニメーター.
     Animator animator = null;
-
-    // リジッドボディ.
-    Rigidbody rigid = null;
-
-    // 攻撃アニメーション中フラグ.
+    //! 攻撃アニメーション中フラグ.
     bool isAttack = false;
-
-    // 接地フラグ.
-    bool isGround = false;
 
     // Start is called before the first frame update
     void Start()
     {
         // Animatorを取得し保管.
         animator = GetComponent<Animator>();
-        
-        // Rigidbodyの取得.
-        rigid = GetComponent<Rigidbody>();
-
         // 攻撃判定用オブジェクトを非表示に.
         attackHit.SetActive( false );
+    }
 
-        // FootSphereのイベント登録.
-        footColliderCall.TriggerStayEvent.AddListener(OnFootTriggerStay);
-        footColliderCall.TriggerExitEvent.AddListener(OnFootTriggerExit);
+    // Update is called once per frame
+    void Update()
+    {
+        
     }
 
     // ---------------------------------------------------------------------
@@ -66,7 +47,7 @@ public class PlayerController : MonoBehaviour
     /// 攻撃アニメーションHitイベントコール.
     /// </summary>
     // ---------------------------------------------------------------------
-    public void Anim_AttackHit()
+    void Anim_AttackHit()
     {
         Debug.Log( "Hit" );
         // 攻撃判定用オブジェクトを表示.
@@ -78,56 +59,12 @@ public class PlayerController : MonoBehaviour
     /// 攻撃アニメーション終了イベントコール.
     /// </summary>
     // ---------------------------------------------------------------------
-    public void Anim_AttackEnd()
+    void Anim_AttackEnd()
     {
         Debug.Log( "End" );
         // 攻撃判定用オブジェクトを非表示に.
         attackHit.SetActive( false );
         // 攻撃終了.
         isAttack = false;
-    }
-
-    // ---------------------------------------------------------------------
-    /// <summary>
-    /// ジャンプボタンクリックコールバック.
-    /// </summary>
-    // ---------------------------------------------------------------------
-    public void OnJumpButtonClicked()
-    {
-        if (isGround)
-        {
-            rigid.AddForce(Vector3.up * jumpPower, ForceMode.Impulse);
-        }
-
-    }
-
-    // ---------------------------------------------------------------------
-    /// <summary>
-    /// FootSphereトリガーステイコール.
-    /// </summary>
-    /// <param name="col"> 侵入したコライダー. </param>
-    // ---------------------------------------------------------------------
-    void OnFootTriggerStay(Collider col)
-    {
-        if (col.gameObject.tag == "Ground")
-        {
-            if (isGround == false) isGround = true;
-            if (animator.GetBool("isGround") == false) animator.SetBool("isGround", true);
-        }
-    }
-
-    // ---------------------------------------------------------------------
-    /// <summary>
-    /// FootSphereトリガーイグジットコール.
-    /// </summary>
-    /// <param name="col"> 侵入したコライダー. </param>
-    // ---------------------------------------------------------------------
-    void OnFootTriggerExit(Collider col)
-    {
-        if (col.gameObject.tag == "Ground")
-        {
-            isGround = false;
-            animator.SetBool("isGround", false);
-        }
     }
 }
